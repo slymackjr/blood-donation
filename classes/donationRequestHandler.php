@@ -17,7 +17,7 @@ class donationRequestHandler
         $this->location = $location;
         $this->status = $status;
 
-        $this->conn = new PDO("mysql:host=localhost;dbname=your_database_name", "your_username", "your_password");
+        $this->conn = new PDO("mysql:host=localhost;dbname=blood-donation", "root", "");
         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
@@ -51,7 +51,7 @@ class donationRequestHandler
         $this->status = $newStatus;
 
         
-        $stmt = $this->conn->prepare("UPDATE donation_requests SET status = :status WHERE request_id = :request_id");
+        $stmt = $this->conn->prepare("UPDATE blood_requests SET request_status = :status WHERE request_id = :request_id");
         $stmt->bindParam(':status', $newStatus);
         $stmt->bindParam(':request_id', $this->requestID);
         $stmt->execute();
@@ -60,7 +60,7 @@ class donationRequestHandler
     public function saveToDatabase()
     {
 
-        $stmt = $this->conn->prepare("INSERT INTO donation_requests (request_id, donor_id, time, location, status) 
+        $stmt = $this->conn->prepare("INSERT INTO blood_requests (request_id, donor_id, time, location, status) 
                                    VALUES (:request_id, :donor_id, :time, :location, :status)");
         $stmt->bindParam(':request_id', $this->requestID);
         $stmt->bindParam(':donor_id', $this->donor->getDonorID()); 

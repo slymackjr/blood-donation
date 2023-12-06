@@ -332,6 +332,6 @@ class HospitalOfficer
         }
         return $resultArray;
     }
-
+    
 }
 

@@ -1,5 +1,3 @@
-<?php include 'include/session.php' ?>
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -28,7 +26,7 @@
                 <a class="nav-link active ps-4 pe-4 text-white" aria-current="page" href="index.php"><i class="fa-solid fa-house p-2"></i>Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link  ps-4 pe-4 text-white" href="request-donor.php"><i class="fa-solid fa-list p-2"></i>request Donor</a>
+                <a class="nav-link  ps-4 pe-4 text-white" href="request-donor.php"><i class="fa-solid fa-list p-2"></i>Requests</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link  ps-4 pe-4 text-white" href="appointments.php" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -63,7 +61,7 @@
                       <div class="row justify-content-center">
                         <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
           
-                          <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Welcome Back Staff!</p>
+                          <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Staff Register here</p>
                           <?php
                       if(isset($_SESSION['error'])){
                           echo "
@@ -78,7 +76,59 @@
                           unset($_SESSION['success']);
                       }
                       ?>
-                          <form class="mx-1 mx-md-4" method="post" action="verify.php">
+          
+                          <form class="mx-1 mx-md-4" method="post" action="signup.php">
+          
+                            <div class="d-flex flex-row align-items-center mb-4">
+                              <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                              <div class="form-outline flex-fill mb-0">
+                                <input type="text" name="name" id="form3Example1c" class="form-control" placeholder="Your Name"/>
+                              </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center mb-4">
+                              <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                              <div class="form-outline flex-fill mb-0">
+                                <input type="text" name="username" id="form3Example1c" class="form-control" placeholder="Your Username"/>
+                              </div>
+                            </div>
+
+                            <div class="d-flex flex-row align-items-center mb-4">
+                              <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                              <div class="form-outline flex-fill mb-0">
+                                <input type="text" name="address" id="form3Example1c" class="form-control" placeholder="Your Address"/>
+                              </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center mb-4">
+                              <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                              <div class="form-outline flex-fill mb-0">
+                                <input type="number" name="phone" id="form3Example1c" class="form-control" placeholder="Your Phone Number"/>
+                              </div>
+                            </div>
+
+                            <div class="d-flex flex-row align-items-center mb-4">
+                              <i class="fas fa-house fa-lg me-3 fa-fw"></i>
+                              <div class="form-outline flex-fill mb-0">
+                                <input type="text" name="department" id="form3Example1c" class="form-control" placeholder="Your Department Name"/>
+                              </div>
+                            </div>
+
+                            <div class="d-flex flex-row align-items-center mb-4">
+                              <i class="fas fa-house fa-lg me-3 fa-fw"></i>
+                              <div class="form-outline flex-fill mb-0">
+                                <input type="text" name="jobTitle" id="form3Example1c" class="form-control" placeholder="Your Hospital title"/>
+                              </div>
+                            </div>
+
+                            <div class="d-flex flex-row align-items-center mb-4">
+                              <i class="fas fa-person fa-lg me-3 fa-fw"></i>
+                              <div class="form-outline flex-fill mb-0">
+                                <select name="gender" id="form3Example1c" class="form-control">
+                                  <option selected>Your Gender</option>
+                                  <option value="Male">Male</option>
+                                  <option value="Female">Female</option>
+                                </select>
+                              </div>
+                            </div>
           
                             <div class="d-flex flex-row align-items-center mb-4">
                               <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
@@ -94,19 +144,26 @@
                               </div>
                             </div>
           
+                            <div class="d-flex flex-row align-items-center mb-4">
+                              <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+                              <div class="form-outline flex-fill mb-0">
+                                <input type="password" name="confirmPassword" id="form3Example4cd" class="form-control" placeholder="Confirm Password"/>
+                              </div>
+                            </div>
+          
                             <div class="form-check d-flex justify-content-center mb-5">
                               <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3c" />
                               <label class="form-check-label" for="form2Example3">
                                 I agree all statements in <a href="#!">Terms of service</a>
                               </label>
                             </div>
-                            <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                              <button type="submit" name="login" class="btn btn-primary btn-lg">Login</button>
-                            </div>
-                            <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                            <p class="small mb-0">Don't have account? <a href="register-staff.php">Create an account</a></p>
-                            </div>
           
+                            <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                              <button type="submit" name="register" class="btn btn-primary btn-lg">Register</button>
+                            </div>
+                            <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                            <p class="small mb-0">Already have an account? <a href="login-staff.php">login at your account</a></p>
+                            </div>
                           </form>
           
                         </div>

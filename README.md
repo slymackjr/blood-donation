@@ -203,6 +203,15 @@ can change your directory i the git bash command line to get to htdocs.
    Here where using the origin alias which specifies which repo we are pushing to in short form.
 8. Then all hands are left to the project team leader and others to review your code and make comments 
     or approve it.
+9. You can delete the sub repository you created first returning to the blood-donation branch.
+    ```shell
+    git checkout blood-donation
+    ```
+   Then after that you can delete the sub repo you created earlier.
+    ```shell
+    git branch -D temp
+    ```
+   Here you are good to go if the changes where approved you can update your repo.
     
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

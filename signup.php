@@ -1,20 +1,27 @@
 <?php
-require_once ('functions.php');
+use App\classes\HospitalOfficer;
 
-include_once 'include/session.php';
+require_once 'include/session.php';
+require_once 'classes/HospitalOfficer.php';
+require_once 'classes/DBManager.php';
+
+$staff = new HospitalOfficer();
 
 if(isset($_POST['register'])){
     $name = $_POST['name'];
     $username = $_POST['username'];
     $email = $_POST['email'];
-    $terms = $_POST['terms'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+    $job_title = $_POST['jobTitle'];
     $password = $_POST['password'];
+    $gender = $_POST['gender'];
     $confirmPassword = $_POST['confirmPassword'];
     $register = $_POST['register'];
 
-    if ($users->registerUsers($register,$name,$username,$email,$terms,$password,$confirmPassword))
+    if ($staff->registerStaff($register,$name,$username,$email,$address,$phone,$job_title,$password,$confirmPassword,$gender))
     {
-        header('location: index.php');
+        header('location: request-donor.php');
     }
 }
 

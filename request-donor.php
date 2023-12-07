@@ -1,11 +1,17 @@
 <?php
+include_once "include/session.php";
 
 use App\classes\HospitalOfficer;
 
-require_once"classes/HospitalOfficer.php";
-require_once"classes/DBManager.php";
+require_once "classes/HospitalOfficer.php";
+require_once "classes/DBManager.php";
+
 
 $officer = new HospitalOfficer();
+
+$email = $_SESSION["userEmail"];
+$officer->getOfficerDetails($email);
+$username = $officer->getUsername();
 ?>
 <!doctype html>
 <html lang="en">
@@ -32,29 +38,29 @@ $officer = new HospitalOfficer();
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active ps-4 pe-4 text-white" aria-current="page" href="#"><i class="fa-solid fa-house p-2"></i>Home</a>
+                <a class="nav-link active ps-4 pe-4 text-white" aria-current="page" href="index.php"><i class="fa-solid fa-house p-2"></i>Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link  ps-4 pe-4 text-white" href="#"><i class="fa-solid fa-list p-2"></i>Requests</a>
+                <a class="nav-link  ps-4 pe-4 text-white" href="request-donor.php"><i class="fa-solid fa-list p-2"></i>Requests</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link  ps-4 pe-4 text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link  ps-4 pe-4 text-white" href="appointments.php" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa-solid fa-calendar-check p-2"></i>  Appointments
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link  ps-4 pe-4 text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link  ps-4 pe-4 text-white" href="about-us.php" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa-solid fa-info p-2"></i>  About Us
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link  ps-4 pe-4 text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link  ps-4 pe-4 text-white" href="contact-us.php" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa-solid fa-phone p-2"></i>  Contact Us
                 </a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
-                data-mdb-toggle="dropdown" aria-expanded="false"> <i class="fas fa-user mx-1"></i> Profile </a>
+                data-mdb-toggle="dropdown" aria-expanded="false"> <i class="fas fa-user mx-1"></i><?php echo $username?></a>
                 <!-- Dropdown menu -->
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <li>
@@ -67,32 +73,16 @@ $officer = new HospitalOfficer();
                 </ul>
             </li>
             </ul>
-            <form class="d-flex" role="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success text-white" type="submit">Search</button>
+            <form class="d-flex" role="search" method="post" action="logout.php">
+              <button class="btn btn-outline-success text-white" type="submit" name="logout">Logout
+              </button>
             </form>
           </div>
         </div>
       </nav>
         <div id="carouselExample" class="carousel">
           <div class="carousel-inner">
-            <div class="carousel-item active p-2">
-              <div class="card border-white rounded-4 trasparent">
-                <!-- <div class="img-wrapper">
-                  <img src="img/status.png" height="300" alt="...">
-                </div> -->
-                <div class="card-body">
-                  <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-center"><a href="#" class="btn btn-primary">Request</a></p>
-                </div>
-              </div>
-            </div>
+            <?php foreach($officer->viewFewDonors() as $row): ?>
             <div class="carousel-item p-2">
               <div class="card border-white rounded-4 trasparent">
                 <!-- <div class="img-wrapper">
@@ -100,118 +90,17 @@ $officer = new HospitalOfficer();
                 </div> -->
                 <div class="card-body">
                   <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text"><Span>HEALTH: </Span>Good</p>
+                  <p class="card-text"><Span>NAME: </Span><?php echo $row['full_name'];?></p>
+                  <p class="card-text"><Span>GENDER: </Span><?php echo $row['gender'];?></p>
+                  <p class="card-text"><Span>LOCATION: </Span><?php echo $row['address'];?></p>
+                  <p class="card-text"><Span>BLOOD GROUP: </Span><?php echo $row['blood_type'];?></p>
+                  <p class="card-text"><Span>HEALTH: </Span><?php echo $row['status'];?></p>
                   <p class="card-text text-center"><a href="#" class="link-secondary">More...</a></p>
                   <p class="card-text text-center"><a href="#" class="btn btn-primary">Request</a></p>
                 </div>
               </div>
             </div>
-            <div class="carousel-item p-2">
-              <div class="card border-white rounded-4 trasparent">
-                <!-- <div class="img-wrapper">
-                  <img src="img/status.png" height="300" alt="...">
-                </div> -->
-                <div class="card-body">
-                  <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-center"><a href="#" class="btn btn-primary">Request</a></p>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item p-2">
-              <div class="card border-white rounded-4 trasparent">
-                <!-- <div class="img-wrapper">
-                  <img src="img/status.png" height="300" alt="...">
-                </div> -->
-                <div class="card-body">
-                  <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-center"><a href="#" class="btn btn-primary">Request</a></p>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item p-2">
-              <div class="card border-white rounded-4 trasparent">
-                <!-- <div class="img-wrapper">
-                  <img src="img/status.png" height="300" alt="...">
-                </div> -->
-                <div class="card-body">
-                  <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-center"><a href="#" class="btn btn-primary">Request</a></p>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item p-2">
-              <div class="card border-white rounded-4 trasparent">
-                <!-- <div class="img-wrapper">
-                  <img src="img/status.png" height="300" alt="...">
-                </div> -->
-                <div class="card-body">
-                  <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-center"><a href="#" class="btn btn-primary">Request</a></p>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item p-2">
-              <div class="card border-white rounded-4 trasparent">
-                <!-- <div class="img-wrapper">
-                  <img src="img/status.png" height="300" alt="...">
-                </div> -->
-                <div class="card-body">
-                  <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-center"><a href="#" class="btn btn-primary">Request</a></p>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item p-2">
-              <div class="card border-white rounded-4 trasparent">
-                <!-- <div class="img-wrapper">
-                  <img src="img/status.png" height="300" alt="...">
-                </div> -->
-                <div class="card-body">
-                  <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-center"><a href="#" class="btn btn-primary">Request</a></p>
-                </div>
-              </div>
-            </div>
+              <?php endforeach;?>
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -249,121 +138,6 @@ $officer = new HospitalOfficer();
         
           </div>
         </div>
-
-        <!-- card viewers number 2-->
-        <!-- Visit https://codepen.io/nicolaskadis/full/brQEOd/ for the latest, no js version! -->
-<div class="container">
-  <div class="row text-center">
-    <div class="col-md-4 card-container">
-      <div class="card card-flip p-2 rounded-4 trasparent">
-        <div class="front card-block">
-          <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text text-start"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text text-start"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text text-start"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text text-start"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text text-start"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-start text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-start text-center"><a href="#" class="btn btn-primary">Request</a></p>
-        </div>
-        <div class="back card-block">
-          <img src="img/status.png" height="300px" alt="image">
-          <a href="#" class="btn btn-outline-primary">Read More</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 card-container">
-      <div class="card card-flip p-2 rounded-4 trasparent">
-        <div class="front card-block">
-          <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text text-start"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text text-start"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text text-start"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text text-start"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text text-start"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-start text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-start text-center"><a href="#" class="btn btn-primary">Request</a></p>
-        </div>
-        <div class="back card-block">
-          <img src="img/status.png" height="300px" alt="image">
-          <a href="#" class="btn btn-outline-primary">Read More</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 card-container">
-      <div class="card card-flip p-2 rounded-4 trasparent">
-        <div class="front card-block">
-          <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text text-start"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text text-start"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text text-start"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text text-start"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text text-start"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-start text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-start text-center"><a href="#" class="btn btn-primary">Request</a></p>
-        </div>
-        <div class="back card-block">
-          <img src="img/status.png" height="300px" alt="image">
-          <a href="#" class="btn btn-outline-primary">Read More</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 card-container">
-      <div class="card card-flip p-2 rounded-4 trasparent">
-        <div class="front card-block">
-          <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text text-start"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text text-start"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text text-start"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text text-start"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text text-start"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-start text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-start text-center"><a href="#" class="btn btn-primary">Request</a></p>
-        </div>
-        <div class="back card-block">
-          <img src="img/status.png" height="300px" alt="image">
-          <a href="#" class="btn btn-outline-primary">Read More</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 card-container">
-      <div class="card card-flip p-2 rounded-4 trasparent">
-        <div class="front card-block">
-          <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text text-start"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text text-start"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text text-start"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text text-start"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text text-start"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-start text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-start text-center"><a href="#" class="btn btn-primary">Request</a></p>
-        </div>
-        <div class="back card-block">
-          <img src="img/status.png" height="300px" alt="image">
-          <a href="#" class="btn btn-outline-primary">Read More</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 card-container">
-      <div class="card card-flip p-2 rounded-4 trasparent">
-        <div class="front card-block">
-          <h5 class="card-title text-center">DONOR</h5>
-                  <p class="card-text text-start"><Span>NAME: </Span>Michael Joel</p>
-                  <p class="card-text text-start"><Span>GENDER: </Span>Male</p>
-                  <p class="card-text text-start"><Span>LOCATION: </Span>Tegeta kibaoni</p>
-                  <p class="card-text text-start"><Span>BLOOD GROUP: </Span>A+</p>
-                  <p class="card-text text-start"><Span>HEALTH: </Span>Good</p>
-                  <p class="card-text text-start text-center"><a href="#" class="link-secondary">More...</a></p>
-                  <p class="card-text text-start text-center"><a href="#" class="btn btn-primary">Request</a></p>
-        </div>
-        <div class="back card-block">
-          <img src="img/status.png" height="300px" alt="image">
-          <a href="#" class="btn btn-outline-primary">Read More</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
      
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>

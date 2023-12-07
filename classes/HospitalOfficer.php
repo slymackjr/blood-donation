@@ -206,13 +206,13 @@ class HospitalOfficer
                 $this->full_name = $user['full_name'];
                 $this->email = $user['email'];
                 $this->gender = $user['gender'];
-                $this->department = $user['department'];
+                //$this->department = $user['department'];
                 $this->address = $user['address'];
                 $this->phone_number = $user['phone_number'];
                 $this->email = $user['email'];
                 $this->status = $user['status'];
                 $this->register_date = $user['register_date'];
-                $this->hospital_id = $user['hospital_id'];
+                //$this->hospital_id = $user['hospital_id'];
                 $this->job_title = $user['job_title'];
                 $success = true;
                 }
@@ -248,15 +248,19 @@ class HospitalOfficer
                                     $_SESSION['username'] = $row['username'];
                                     $_SESSION['userEmail'] = $row['email'];
                                     $_SESSION['log'] = $row['email'];
-                                $success = true;
+                                    $success = true;
+                                    header('Location: request-donor.php');
                             } else {
                                 $_SESSION['error'] = 'Incorrect Password';
+                                header('Location: login-staff.php');
                             }
                         } else {
                             $_SESSION['error'] = 'Account not active.'.$row['numrows'];
+                            header('Location: login-staff.php');
                         }
                     } else {
                         $_SESSION['error'] = 'Email not found';
+                        header('Location: login-staff.php');
                     }
                 } catch (Exception $e) {
                     echo "There is some problem in connection: " . $e->getMessage();
@@ -264,13 +268,14 @@ class HospitalOfficer
 
             } else {
                 $_SESSION['error'] = 'Input login credentials first';
+                header('Location: login-staff.php');
             }
         }
             return $success;
 
     }
 
-    public function registerStaff($register,$name,$username,$email,$password,$confirmPassword,$address,$blood_type,$birthdate,$phone_number,$table = "staff_members"): bool
+    public function registerStaff($register,$name,$username,$email,$address,$phone,$job_title,$password,$confirmPassword,$gender,$table = "staff_members"): bool
     {
         $message = false;
         if (isset($register)) {
@@ -295,15 +300,18 @@ class HospitalOfficer
                     $password = password_hash($password, PASSWORD_DEFAULT);
                     $code = 'active';
 
-                        $stmt = $this->db->con->prepare("INSERT INTO $table (email, password, full_name, username, status, register_date,birthdate,phone_number,address,blood_type,gender) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-                        $stmt->bind_param('sssssssssss', $email, $password, $name, $username, $code, $now,$birthdate,$phone_number,$address,$blood_type,$gender);
+                        $stmt = $this->db->con->prepare("INSERT INTO $table (email, password, full_name, username, status, register_date,gender,address,job_title,phone_number) VALUES (?,?,?,?,?,?,?,?,?,?)");
+                        $stmt->bind_param('ssssssssss', $email, $password, $name, $username, $code, $now,$gender,$address,$job_title,$phone);
                         if ($stmt->execute()) {
                             $message = true;
                             $_SESSION['error'] = "Registered Successfully!";
-                            header('location: ../register.php');
+                            $_SESSION['user'] = $row['staff_id'];
+                            $_SESSION['username'] = $row['username'];
+                            $_SESSION['userEmail'] = $row['email'];
+                            header('location: ../request-donor.php');
                         }else{
                             $_SESSION['error'] = "Failed to Register! Please try again.";
-                            header('location: ../register.php');
+                            header('location: ../register-staff.php');
                         }
                 }
 
@@ -311,7 +319,7 @@ class HospitalOfficer
 
         } else {
             $_SESSION['error'] = 'Fill up signup form first';
-            header('location: ../register.php');
+            header('location: ../register-staff.php');
         }
         return $message;
     }
@@ -321,6 +329,22 @@ class HospitalOfficer
     {
         //fetch product data using getData method
         $result = $this->db->con->prepare("SELECT * FROM $table");
+        $result->execute();
+        $stmt = $result->get_result();
+
+        $resultArray = array();
+
+        //fetch product data one by one
+        while ($item = $stmt->fetch_assoc()){
+            $resultArray[] = $item;
+        }
+        return $resultArray;
+    }
+
+    public function viewFewDonors($table = 'blood_donor_users'): array
+    {
+        //fetch product data using getData method
+        $result = $this->db->con->prepare("SELECT * FROM $table order by full_name LIMIT 10");
         $result->execute();
         $stmt = $result->get_result();
 

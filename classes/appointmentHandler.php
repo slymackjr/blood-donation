@@ -15,7 +15,7 @@ class appointmentHandler
     }
 
     public function getAppointments(){
-        return $this->appointmens;
+        return $this->appointments;
     }
 
     public function showAppointments(){
